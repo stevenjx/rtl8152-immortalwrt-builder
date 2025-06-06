@@ -22,8 +22,8 @@ jobs:
 
       - name: Download ImmortalWRT SDK
         run: |
-          wget https://downloads.immortalwrt.org/releases/24.10.1/targets/ipq807x/generic/immortalwrt-sdk-24.10.1-ipq807x-generic_Linux-x86_64.tar.xz
-          tar -xf immortalwrt-sdk-24.10.1-ipq807x-generic_Linux-x86_64.tar.xz
+          wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+          tar -xf immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
           mv immortalwrt-sdk-* sdk
 
       - name: Install Required Modules
