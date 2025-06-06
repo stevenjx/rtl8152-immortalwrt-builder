@@ -33,17 +33,15 @@ jobs:
 
     - name: Set up SDK environment
       run: |
-        cd sdk
-        # 初始化 feeds
+        cd $(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
     - name: Compile USB 2.5G Network Drivers
       run: |
-        cd sdk
-        # 这里根据你的需求修改config，例如：
-        # echo "CONFIG_USB_NET_R8152=y" >> .config
-        # echo "CONFIG_USB_NET_ASIX=y" >> .config
+        cd $(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
+        echo "CONFIG_PACKAGE_kmod-usb-net=y" >> .config
+        echo "CONFIG_PACKAGE_kmod-usb-net-rtl8152=y" >> .config
         make defconfig
         make package/kernel/linux/compile V=s
 
@@ -52,6 +50,5 @@ jobs:
       with:
         name: usb-network-drivers-ipk
         path: |
-          sdk/bin/packages/*/base/kmod-usb-net-rtl8152_*.ipk
-          sdk/bin/packages/*/base/kmod-usb-net-asix-ax88179_*.ipk
-          sdk/bin/packages/*/base/kmod-usb-net_*.ipk
+          **/bin/packages/*/base/kmod-usb-net-rtl8152_*.ipk
+          **/bin/packages/*/base/kmod-usb-net_*.ipk
