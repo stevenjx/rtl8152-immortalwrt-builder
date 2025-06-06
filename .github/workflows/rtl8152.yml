@@ -23,7 +23,7 @@ jobs:
 
     - name: Download ImmortalWRT SDK (.zst format)
       run: |
-        wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x_gcc-13.3.0_musl/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+        wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
 
     - name: Extract ImmortalWRT SDK
       run: |
