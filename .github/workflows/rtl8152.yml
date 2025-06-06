@@ -1,0 +1,54 @@
+name: Build USB 2.5G Network Drivers for ImmortalWRT
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build USB Network Drivers
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib \
+            gettext git libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev \
+            libelf-dev ccache rename libtool-bin python3 python3-pip
+
+      - name: Download ImmortalWRT SDK
+        run: |
+          wget https://downloads.immortalwrt.org/releases/24.10.1/targets/ipq807x/generic/immortalwrt-sdk-24.10.1-ipq807x-generic_Linux-x86_64.tar.xz
+          tar -xf immortalwrt-sdk-24.10.1-ipq807x-generic_Linux-x86_64.tar.xz
+          mv immortalwrt-sdk-* sdk
+
+      - name: Install Required Modules
+        run: |
+          cd sdk
+          ./scripts/feeds update -a
+          ./scripts/feeds install \
+            kmod-usb-net-rtl8152 \
+            kmod-usb-net-asix-ax88179 \
+            kmod-usb-net \
+            kmod-usb-core \
+            kmod-usb2 \
+            kmod-usb3 \
+            kmod-mii
+          make defconfig
+
+      - name: Compile All Drivers
+        run: |
+          cd sdk
+          make package/kernel/linux/compile V=s
+
+      - name: Upload Drivers
+        uses: actions/upload-artifact@v3
+        with:
+          name: usb-2.5g-net-drivers
+          path: |
+            sdk/bin/packages/*/base/kmod-usb-net-*.ipk
+            sdk/bin/packages/*/base/kmod-usb[23]*.ipk
+            sdk/bin/packages/*/base/kmod-mii_*.ipk
