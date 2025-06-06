@@ -13,13 +13,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Dependencies
-  run: |
-    sudo apt update
-    sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib \
-      gettext git libncurses-dev libssl-dev python3 python3-pip python3-setuptools \
-      rsync unzip zlib1g-dev libelf-dev ccache rename libtool-bin
-    python3 -m pip install --upgrade pip setuptools wheel
-    python3 -m pip install distutils
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib \
+          gettext git libncurses-dev libssl-dev python3 python3-pip python3-setuptools \
+          rsync unzip zlib1g-dev libelf-dev ccache rename libtool-bin
+          python3 -m pip install --upgrade pip setuptools wheel
+          python3 -m pip install distutils
 
 
       - name: Download ImmortalWRT SDK
