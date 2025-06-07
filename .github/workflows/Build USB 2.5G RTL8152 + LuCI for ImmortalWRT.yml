@@ -12,15 +12,21 @@ jobs:
         sudo apt update
         sudo apt install -y build-essential unzip zstd rsync python3-pip
 
-    - name: Clone SDK
+    - name: Download ImmortalWRT SDK
       run: |
         wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-        tar --use-compress-program=unzstd -xvf immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-        mv immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64 sdk
 
-    - name: Setup Feeds and Config
-      working-directory: ./sdk
+    - name: Extract SDK
       run: |
+        zstd -d immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst -o sdk.tar
+        tar -xf sdk.tar
+        rm sdk.tar
+
+    - name: Configure build with drivers
+      run: |
+        export SDK_DIR=$(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
+        cd $SDK_DIR
+
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
