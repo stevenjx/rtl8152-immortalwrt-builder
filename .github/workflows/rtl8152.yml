@@ -49,9 +49,7 @@ jobs:
         cd $SDK_DIR
 
         make package/kernel/linux/compile V=s
-        make package/kernel/linux/modules/usb-net-rtl8152/compile V=s
-        make package/kernel/linux/modules/usb-net-asix-ax88179/compile V=s
-        make package/kernel/linux/modules/usb-net-aqc111/compile V=s
+        make package/kernel/linux/compile V=s CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
 
     - name: Upload compiled IPK packages
       uses: actions/upload-artifact@v4
