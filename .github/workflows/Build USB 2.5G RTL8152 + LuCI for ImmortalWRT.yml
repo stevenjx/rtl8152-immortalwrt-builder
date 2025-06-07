@@ -15,8 +15,8 @@ jobs:
     - name: Clone SDK
       run: |
         wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-        tar --use-compress-program=unzstd -xvf immortalwrt-sdk-*.tar.zst
-        mv immortalwrt-sdk-* sdk
+        tar --use-compress-program=unzstd -xvf immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+        mv immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64 sdk
 
     - name: Setup Feeds and Config
       working-directory: ./sdk
