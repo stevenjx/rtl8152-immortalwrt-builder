@@ -48,7 +48,6 @@ jobs:
         export SDK_DIR=$(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
         cd $SDK_DIR
 
-        make package/kernel/linux/compile V=s
         make package/kernel/linux/compile V=s CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
 
     - name: Upload compiled IPK packages
