@@ -44,7 +44,7 @@ jobs:
         run: |
           export SDK_DIR=$(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
           cd $SDK_DIR
-          make package/kmod-usb-net-rtl8152/compile V=s -j$(nproc)
+          make package/kernel/linux/compile V=s -j$(nproc)
 
       - name: Upload RTL8152 IPK files
         uses: actions/upload-artifact@v4
