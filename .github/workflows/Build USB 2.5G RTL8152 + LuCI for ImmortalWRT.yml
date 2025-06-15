@@ -1,4 +1,4 @@
-name: Build USB 2.5G RTL8152 + LuCI for ImmortalWRT
+name: Build kmod-usb-net-rtl8152 for ImmortalWRT
 
 on:
   workflow_dispatch:
@@ -7,53 +7,43 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Install Dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y build-essential unzip zstd rsync python3-pip
+      - name: Checkout SDK source
+        uses: actions/checkout@v3
 
-    - name: Download ImmortalWRT SDK
-      run: |
-        wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential ccache ecj fastjar file g++ gawk \
+            gettext git java-propose-classpath libelf-dev libncurses5-dev \
+            libncursesw5-dev libssl-dev python3 unzip wget zlib1g-dev
 
-    - name: Extract SDK
-      run: |
-        zstd -d immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst -o sdk.tar
-        tar -xf sdk.tar
-        rm sdk.tar
+      - name: Download ImmortalWRT SDK
+        run: |
+          wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.xz
+          tar -xf immortalwrt-sdk-*.tar.xz
 
-    - name: Configure build with drivers
-      run: |
-        export SDK_DIR=$(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
-        cd $SDK_DIR
+      - name: Configure RTL8152 build
+        run: |
+          export SDK_DIR=$(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
+          cd $SDK_DIR
 
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
 
-        cat >> .config <<EOF
-          CONFIG_PACKAGE_kmod-usb-net=y
-          CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
-          CONFIG_PACKAGE_luci=y
-          CONFIG_PACKAGE_luci-base=y
-          CONFIG_PACKAGE_luci-mod-network=y
-          CONFIG_PACKAGE_luci-proto-ethernet=y
-          CONFIG_PACKAGE_luci-theme-bootstrap=y
-          EOF
+          echo "CONFIG_PACKAGE_kmod-usb-net=y" >> .config
+          echo "CONFIG_PACKAGE_kmod-usb-net-rtl8152=y" >> .config
 
-        make defconfig
+          make defconfig
 
-    - name: Build Package
-      working-directory: ./sdk
-      run: |
-        make package/kernel/linux/compile V=s CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
+      - name: Build RTL8152 driver only
+        run: |
+          export SDK_DIR=$(find . -maxdepth 1 -type d -name "immortalwrt-sdk-*")
+          cd $SDK_DIR
+          make package/kmod-usb-net-rtl8152/compile V=s -j$(nproc)
 
-    - name: Find Artifacts
-      working-directory: ./sdk
-      run: |
-        find ./bin/packages/ -name '*.ipk'
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: compiled-ipks
-        path: ./sdk/bin/packages/**/*.ipk
+      - name: Upload RTL8152 IPK files
+        uses: actions/upload-artifact@v3
+        with:
+          name: kmod-usb-net-rtl8152
+          path: |
+            **/bin/packages/*/base/kmod-usb-net*.ipk
