@@ -47,7 +47,7 @@ jobs:
           make package/kernel/linux/compile V=s -j$(nproc)
 
       - name: Find IPK Files
-        run: find bin/ -name "kmod-usb-net*.ipk"
+        run: find bin/packages -name "kmod-usb-net*.ipk"
   
       - name: Upload RTL8152 IPK files
         uses: actions/upload-artifact@v4
