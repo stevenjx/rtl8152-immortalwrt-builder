@@ -52,7 +52,7 @@ jobs:
       - name: Upload RTL8152 IPK files
         uses: actions/upload-artifact@v4
         with:
-          name: kmod-usb-net-rtl8152
+          name: rtl8152-ipks
           path: |
-             bin/packages/*/base/kmod-usb-net*.ipk
-             bin/targets/*/*/packages/kmod-usb-net*.ipk
+            ${{ github.workspace }}/**/bin/packages/*/base/kmod-usb-net*.ipk
+            ${{ github.workspace }}/**/bin/targets/*/*/packages/kmod-usb-net*.ipk
