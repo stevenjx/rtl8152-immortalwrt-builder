@@ -14,14 +14,18 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib \
-          gettext git libncurses-dev libssl-dev python3-distutils rsync unzip \
-          zlib1g-dev file wget python3 python3-pip
+          gettext git libncurses-dev libssl-dev python3 python3-pip python3-setuptools \
+          rsync unzip zlib1g-dev libelf-dev ccache rename libtool-bin zstd
 
     - name: Download ImmortalWRT SDK
       run: |
-        wget https://github.com/immortalwrt/immortalwrt/releases/download/v24.10.1/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.xz
-        tar -xf immortalwrt-sdk-24.10.1-*.tar.xz
-        mv immortalwrt-sdk-24.10.1-* sdk
+        wget https://downloads.immortalwrt.org/releases/24.10.1/targets/qualcommax/ipq807x/immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+
+    - name: Extract SDK
+      run: |
+        zstd -d immortalwrt-sdk-24.10.1-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst -o sdk.tar
+        tar -xf sdk.tar
+        rm sdk.tar
 
     - name: Configure kernel modules
       run: |
